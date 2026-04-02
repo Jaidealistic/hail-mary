@@ -1,0 +1,294 @@
+﻿
+⬡  AstroScan
+Stellar Anomaly Detection Engine
+Inspired by Project Hail Mary · Real NASA Data · Full-Stack ML System
+
+Complete Project Blueprint for Final Year B.Tech CSE
+
+1. What Is AstroScan?
+AstroScan is a full-stack, machine learning-powered stellar anomaly detection system that ingests real photometric data from NASA space telescopes, applies unsupervised learning to model 'normal' stellar behaviour, and automatically flags unexplained deviations in light curves - classifying them as planetary transits, stellar flares, instrument noise, or genuinely anomalous signals.
+
+In Andy Weir's Project Hail Mary, humanity discovers the alien organism Astrophage by noticing an inexplicable anomaly in solar energy measurements. AstroScan operationalises this exact idea - but with real telescope data, real ML, and a real deployable system. You are literally building the Hail Mary's detection algorithm.
+
+The system has three major pillars:
+• Pillar 1: Data Engineering - automated ingestion and preprocessing of NASA Kepler/TESS FITS files via public APIs
+• Pillar 2: Machine Learning - LSTM autoencoder trained on 50,000+ light curves to model normal stellar flux, combined with a CNN classifier for signal typing
+• Pillar 3: Full-Stack Product - a React dashboard with an interactive star map, anomaly timeline, spectral plots, and a FastAPI backend with Docker deployment on AWS
+
+2. Real-World Usefulness & Applications
+2.1 Actual Scientific Value
+This is not a dummy project. The underlying problem - finding anomalies in stellar light curves - is an active area of research at NASA, ESA, and leading universities. Real scientists use similar pipelines to:
+• Discover new exoplanets (NASA's Kepler mission found 2,600+ planets this way)
+• Detect rare stellar phenomena like Boyajian's Star (KIC 8462852), whose bizarre dimming patterns remain partially unexplained
+• Identify stellar flares that affect planetary habitability calculations
+• Filter instrument noise from genuine astrophysical signals in petabyte-scale datasets
+
+2.2 Industry Applications
+The core techniques directly transfer to high-demand industry roles:
+
+Time-Series ML
+IoT sensor anomaly detection, financial fraud detection, predictive maintenance - the LSTM autoencoder architecture is identical
+Data Pipelines
+ETL pipelines processing scientific FITS files mirror real-world data engineering at scale (Spotify, Netflix, Bloomberg)
+Anomaly Detection
+Cybersecurity (SIEM systems), manufacturing quality control, network monitoring - same statistical foundations
+MLOps
+Model versioning, Docker deployment, REST APIs, CI/CD - standard industry DevOps stack
+Scientific Computing
+NumPy, SciPy, Astropy - used by every major research institution and quantum computing company
+
+3. What Makes AstroScan Novel?
+Most student ML projects use Titanic, MNIST, or house price datasets. AstroScan's novelty comes from several dimensions:
+
+3.1 Real, Messy, Scientific Data
+NASA's FITS files are notoriously difficult to work with. They contain binary headers, irregular time sampling, instrument systematics, and missing cadences. Processing this data correctly is itself a significant engineering achievement that most students never attempt.
+3.2 Multi-Modal ML Architecture
+The combination of an LSTM autoencoder (for temporal anomaly scoring) fed into a CNN classifier (for waveform-shape-based signal typing) is a genuinely sophisticated two-stage architecture. This is not a tutorial model - it mirrors real research pipelines published in journals like The Astrophysical Journal.
+3.3 The 'Unknown Signal' Category
+Most anomaly detectors classify into known categories. AstroScan's fourth class - 'Unknown / Unexplained' - captures signals that don't match any learned template. This is the scientifically interesting category, and building it requires careful calibration of confidence thresholds and ensemble methods.
+3.4 Live Interactive Dashboard
+The React frontend with a real D3.js star map, zoomable light curve viewer, and anomaly confidence scoring moves this beyond a Jupyter notebook into a deployable product. Very few student projects reach this level of end-to-end polish.
+3.5 Thematic Coherence
+Every design decision - from the dark UI colour palette, to the naming conventions (signals are called 'Contacts', anomalies are 'Events'), to the fictional Astrophage category - is consistent with the Project Hail Mary universe. This thematic coherence makes the project memorable and demonstrates product thinking.
+
+4. Tech Stack, Tools & Environments
+
+4.1 Data Layer
+Lightkurve (Python)
+NASA's official Python library for downloading and processing Kepler/TESS light curves. Abstracts FITS file complexity.
+Astropy
+The standard Python library for astronomical data - unit conversions, coordinate systems, time formats.
+NASA MAST API
+Public REST API giving access to 200,000+ stellar light curves. No API key required for basic access.
+PostgreSQL + TimescaleDB
+Time-series optimised database storing normalised flux readings, anomaly scores, and metadata per star.
+Apache Airflow
+Optional: orchestrate nightly data ingestion pipeline. Shows DevOps maturity.
+
+4.2 Machine Learning Layer
+PyTorch / TensorFlow
+LSTM Autoencoder built in either framework. PyTorch preferred for research-style flexibility.
+Scikit-learn
+Isolation Forest baseline model, preprocessing pipelines, evaluation metrics.
+NumPy / SciPy
+Numerical processing, signal detrending, Lomb-Scargle periodogram for periodicity detection.
+Weights & Biases
+ML experiment tracking - log loss curves, hyperparameter sweeps, model comparison. Industry-standard tool.
+ONNX
+Export trained models to portable format for fast inference in the backend API.
+
+4.3 Backend Layer
+FastAPI (Python)
+High-performance REST API framework. Async endpoints for model inference and database queries.
+Pydantic
+Request/response validation and serialisation - pairs natively with FastAPI.
+Redis
+Caching frequent star lookups and precomputed anomaly scores. Reduces inference latency.
+Docker + Docker Compose
+Containerise every service (API, database, model server) for reproducible deployment.
+AWS EC2 / Railway
+Cloud deployment. EC2 for full control; Railway for simple one-click deployment.
+GitHub Actions
+CI/CD pipeline: run tests, build Docker image, deploy on merge to main.
+
+4.4 Frontend Layer
+React 18 + TypeScript
+Component-based SPA with strict typing - industry standard.
+D3.js
+Custom star map visualisation, zoomable light curve plots, animated anomaly overlays.
+Tailwind CSS
+Utility-first styling. Dark theme matching Project Hail Mary's aesthetic.
+Framer Motion
+Smooth transitions for anomaly alerts, panel reveals, and interactive elements.
+Recharts
+Secondary charts for anomaly score timelines and stellar classification histograms.
+Vite
+Ultra-fast build tool. Replaces Create React App.
+
+4.5 Development Environment
+VS Code + Jupyter
+Primary editors. Jupyter for exploratory data analysis, VS Code for production code.
+Conda / venv
+Python environment management. Separate envs for data processing and ML training.
+Git + GitHub
+Version control with meaningful commit history - interviewers check this.
+Pytest
+Backend unit and integration testing. Aim for >80% coverage.
+ESLint + Prettier
+Frontend code quality and formatting.
+Postman
+API testing and documentation during development.
+
+5. Why This Meets World-Class BTech Standard
+
+Reference Benchmark: Final year projects at IIT Bombay, NUS Singapore, TU Delft, and equivalent institutions are evaluated on: (1) problem significance, (2) technical depth, (3) originality, (4) implementation completeness, and (5) communication quality. AstroScan scores strongly on all five.
+
+5.1 Problem Significance
+Stellar anomaly detection is an active NASA research programme. The TESS mission alone generates 100GB+ of light curve data per day. Applying ML to automate anomaly detection at this scale is a genuinely important unsolved problem - not a textbook exercise.
+5.2 Technical Depth
+The architecture spans multiple subfields: time-series signal processing, deep learning (LSTM, CNN), unsupervised anomaly detection, distributed systems (async API, Redis cache, Airflow), and interactive data visualisation. This breadth is unusual for undergraduate projects and demonstrates readiness for industry or research.
+5.3 Implementation Completeness
+A world-class project is not a Jupyter notebook - it is a system. AstroScan has a data pipeline, trained and versioned ML models, a deployed API with documentation, a frontend with real interactivity, containerised infrastructure, and a test suite. Each piece is professional-grade, not academic-grade.
+5.4 Measurable Results
+You can report concrete metrics: reconstruction error thresholds, precision/recall on known exoplanet transits from the Kepler catalogue (ground truth available!), inference latency in ms, number of stars processed, percentage of Kepler confirmed planets correctly detected. These numbers make the project credible.
+5.5 Documentation & Communication
+A world-class project has a README that any engineer can follow, an architecture diagram, an API reference (auto-generated by FastAPI), a system design document, and optionally a 2-page technical report. The project you are reading right now is the foundation for that documentation.
+
+6. How This Impresses Interviewers
+
+6.1 The Opening Story
+"I was reading Project Hail Mary and realised the Astrophage discovery was essentially a time-series anomaly detection problem. I thought - I can build that. I pulled 50,000 real stellar light curves from NASA's TESS API, trained an LSTM autoencoder to model normal star behaviour, and anything the model struggled to reconstruct was flagged as anomalous. The system correctly identifies 94% of confirmed Kepler exoplanet transits from the validation set."
+
+This story hits four interviewer pleasure points simultaneously: (1) genuine intellectual curiosity, (2) self-directed initiative, (3) technical depth, and (4) real measurable results. Most candidates describe projects they were assigned. You describe one you invented.
+6.2 Questions You Will Be Asked - And How You'll Crush Them
+
+'Walk me through your ML architecture'
+LSTM autoencoder learns temporal patterns. Reconstruction error = anomaly score. CNN then classifies waveform shape. Two-stage pipeline, show diagram.
+'Why not just use threshold-based detection?'
+Thresholds are static and brittle. Stars have different intrinsic variability. The autoencoder learns per-star baselines. Mention that this matches real NASA approaches.
+'How did you handle class imbalance?'
+Anomalies are rare (~1-5% of windows). Used weighted loss, SMOTE on training data, and adjusted decision thresholds. Show precision-recall curves.
+'How did you deploy this?'
+Docker containers for API and model server, deployed on AWS EC2. GitHub Actions CI/CD runs tests and auto-deploys on merge. API documented with auto-generated FastAPI docs.
+'What would you improve?'
+Transformer-based architecture (like Informer) for longer context windows. Active learning loop where astronomers can label new anomalies and retrain. Shows you've thought beyond the project.
+
+6.3 Resume Bullet Points
+SAMPLE RESUME BULLETS - copy and adapt these:
+
+• Built an end-to-end ML pipeline ingesting 50,000+ real stellar light curves from NASA's TESS API, preprocessing binary FITS files and storing normalised time-series in a PostgreSQL/TimescaleDB database
+• Trained a two-stage ML system (LSTM autoencoder + CNN classifier) achieving 94% recall on confirmed Kepler exoplanet transits and sub-200ms inference latency
+• Designed and deployed a full-stack anomaly detection product (FastAPI + React + D3.js) on AWS EC2 with Docker, CI/CD via GitHub Actions, and Redis caching
+• Applied unsupervised anomaly detection to real astrophysical data, correctly flagging all 7 known anomalous signals in validation set including confirmed planetary transits and stellar flares
+
+7. Why AstroScan Outperforms Common Projects
+
+Typical Student Project
+AstroScan
+MNIST digit classifier
+50,000+ real stellar light curves from active NASA missions
+House price prediction (Kaggle)
+Novel anomaly detection on scientific data with no clean labels
+Sentiment analysis chatbot
+Multi-modal ML: LSTM autoencoder + CNN in a two-stage pipeline
+CRUD web application
+Full MLOps: model training, versioning, serving, monitoring, deployment
+Local demo / Jupyter notebook
+Live deployed system with public URL, Docker, CI/CD
+Generic dataset (UCI, Kaggle)
+Real NASA API data with measurable scientific ground truth
+Standard dark/light theme UI
+Thematically designed UI inspired by a bestselling novel
+No documentation
+Architecture docs, API reference, README, system design diagram
+
+The key differentiator is specificity. Every element of AstroScan - the data source, the ML architecture, the deployment, the UI - has a clear reason for existing and a story behind it. Generic projects have none of this. When an interviewer sees AstroScan versus a sentiment analyser, they immediately understand that you think like an engineer, not a student.
+
+8. The Project Hail Mary Connection
+
+8.1 The Source Material
+Andy Weir's Project Hail Mary (2021) follows astronaut Ryland Grace, who wakes up alone in a spacecraft with no memory, on a mission to save Earth from an energy-draining microorganism called Astrophage. The organism was first detected because scientists noticed an anomalous, unexplained dip in the sun's luminosity - essentially a photometric anomaly in stellar flux data.
+8.2 Direct Parallels to AstroScan
+
+Novel Element
+AstroScan Implementation
+Astrophage detected via solar luminosity anomaly
+LSTM autoencoder flags anomalies in stellar flux (luminosity) data
+Scientists filter noise from real signal
+CNN classifier separates instrument noise from genuine astrophysical events
+The 'unexplained' signal drives the plot
+The 'Unknown' classification category captures signals outside known templates
+Rocky (alien) communicates via mathematical patterns
+Periodic signal detection using Lomb-Scargle periodogram
+Mission control analyses data at global scale
+Dashboard displays all monitored stars simultaneously on an interactive sky map
+Hail Mary ship's computer
+The AstroScan API: queried by the frontend exactly as Rocky queries the ship's systems
+Petrov's initial discovery
+The moment a new 'Unknown Contact' alert fires on the dashboard
+
+8.3 Thematic Naming Conventions
+Naming in AstroScan is consistent with the novel's universe:
+• Anomalies are called Contacts (as in 'first contact')
+• Confirmed transits are flagged as Transit Events
+• The unknown class is labelled Unexplained Contact - mirroring how Astrophage was initially described
+• The API endpoint for submitting a new star for analysis is /hail-mary (a nod to the mission name)
+• The confidence score is displayed as a 'Signal Clarity' percentage
+
+9. Frontend Design - The Project Hail Mary Aesthetic
+
+The AstroScan dashboard is designed to feel like mission control software from the novel - not a generic SaaS dashboard. Every design decision reinforces the space-science theme.
+
+9.1 Colour Palette
+
+Deep Space Black (#0A0B14)
+Primary background - mimics the void of space. Never pure #000000.
+Nebula Purple (#4B3FA0)
+Primary accent - console displays and scanner readouts in sci-fi often use blue-purple.
+Bioluminescent Teal (#0F9B7A)
+Confirmed safe signals / transits - green-teal suggests 'known, benign'.
+Alert Amber (#C87C1A)
+Anomaly alerts - warm amber for 'attention required' without red's false alarm connotation.
+Astrophage Red (#8B2020)
+Unknown / unexplained contacts - deep red for genuine unknowns.
+Star White (#E8E4F8)
+Primary text - slightly purple-tinted white feels cold and cosmic.
+Console Gray (#2A2B40)
+Panel backgrounds - one step lighter than the void.
+
+9.2 Typography
+• Display / Headers: Space Grotesk or Orbitron (Google Fonts) - geometric, technical, sci-fi without being cliché
+• Body / Data: JetBrains Mono - monospace for all numerical data (flux values, timestamps, coordinates) feels like a real scientific instrument
+• UI Labels: IBM Plex Sans - clean, technical, used in real NASA mission interfaces
+
+9.3 Key UI Components
+
+The Stellar Map
+A D3.js force-directed or equirectangular projection of the observable sky, with each monitored star rendered as a pulsing dot. Colour indicates status: white for clean, amber for anomalous, red for unknown. Clicking a star opens its detail panel. This is the centrepiece of the dashboard - no other student project has anything like it.
+Light Curve Viewer
+An interactive SVG plot (using D3 or Recharts) showing flux over time for the selected star. Anomaly windows are highlighted with a semi-transparent amber overlay. Users can zoom and pan. A reconstruction error subplot below shows the autoencoder's confidence per window.
+Contact Alert Feed
+A real-time scrolling feed (polling the API every 30 seconds) showing new anomaly detections. Each alert has a severity badge, star ID, coordinates, and a one-line ML classification reason. Styled like mission control telemetry - monospace font, subtle scan-line animation.
+Signal Classification Panel
+When a star is selected, this panel shows the CNN classifier's output as a horizontal confidence bar for each of the four classes: Planetary Transit, Stellar Flare, Instrument Noise, and Unexplained Contact. Bars animate in on load using Framer Motion.
+Mission Statistics Header
+A persistent header strip showing: Stars Monitored, Contacts Detected Today, Unexplained Contacts (the scary number), and Model Last Retrained. All numbers count up with a ticker animation on page load - deeply satisfying.
+
+9.4 Motion & Micro-interactions
+• Stars on the map pulse with a slow CSS animation - frequency increases when anomalous
+• New alert cards slide in from the right with a subtle glow border in the alert colour
+• The light curve plot's anomaly overlay fades in after the baseline renders - visual storytelling
+• Page load: stats count up from zero over 1.2 seconds using a custom easing curve
+• Hover on any star: a tooltip appears with Star ID, magnitude, constellation, and anomaly count
+
+10. Suggested Build Plan
+
+
+Environment setup. Download 5,000 Kepler light curves via Lightkurve. EDA in Jupyter. Understand FITS file structure. Build preprocessing pipeline (detrend, normalise, window).
+
+Train LSTM autoencoder baseline. Evaluate reconstruction error distribution. Tune threshold. Validate against known exoplanet transits in Kepler catalogue.
+
+Build CNN classifier for signal typing. Create labelled training set (transits from Kepler catalogue, flares from published datasets). Train, evaluate, iterate.
+
+FastAPI backend. Endpoints: /stars, /stars/{id}/lightcurve, /stars/{id}/anomalies, /contacts, /hail-mary. PostgreSQL schema. Redis caching. Dockerise.
+
+React frontend. Star map with D3.js. Light curve viewer. Alert feed. Classification panel. Dark theme, typography, motion.
+
+Deploy to AWS/Railway. GitHub Actions CI/CD. Write README, architecture diagram, API docs. Record a demo video. Polish everything.
+
+11. Stretch Goals (For Extra Wow Factor)
+• Transformer-based anomaly detection (Informer or PatchTST) instead of LSTM - cutting-edge architecture published in 2022-2024
+• Active learning loop - astronomers can label new contacts and trigger model retraining from the UI
+• Public API with rate limiting and API key authentication - shows understanding of API productisation
+• Browser-based inference using ONNX Runtime Web - the model runs client-side, no server needed for demo
+• Comparison with existing tools like NASA's own AutoML pipeline - positions the project in a research context
+
+Final Thought
+
+Every great project has a story. AstroScan's story is: I read a novel about finding an alien through a data anomaly, and I built the system that would have found it. That story is memorable, human, and technically rigorous. It will be remembered long after the interview ends.
+
+- End of Project Blueprint -
+AstroScan - Project Blueprint   |   Final Year B.Tech CSE Project
+
+Confidential - Project Blueprint
+
