@@ -19,10 +19,13 @@ class Star(Base):
     magnitude = Column(Float)
 
 def initialize_database():
-    # Attempt to create TimescaleDB extension
+    # Attempt to create TimescaleDB extension (Forgiving for Supabase)
     with engine.connect() as conn:
-        conn.execute(text("CREATE EXTENSION IF NOT EXISTS timescaledb;"))
-        conn.commit()
+        try:
+            conn.execute(text("CREATE EXTENSION IF NOT EXISTS timescaledb;"))
+            conn.commit()
+        except Exception as e:
+            print("TimescaleDB not supported on this cloud host, defaulting to standard PostgreSQL. Error:", e)
 
     # Drop tables if they exist to start fresh
     Base.metadata.drop_all(engine)
