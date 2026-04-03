@@ -17,7 +17,6 @@ const LandingPage: React.FC = () => {
     const [launched, setLaunched] = useState(false);
     const [particles, setParticles] = useState<Array<{id:number, x:number, y:number, size:number, speed:number, opacity:number}>>([]);
     const containerRef = useRef<HTMLDivElement>(null);
-    const animFrameRef = useRef<number>(0);
 
     // Generate floating particle specs once
     useEffect(() => {
