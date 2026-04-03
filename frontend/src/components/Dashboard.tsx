@@ -159,7 +159,7 @@
 import React, { useEffect, useState } from 'react';
 import { getStars, getLightCurve, detectAnomalies } from '../api';
 import { LightCurveGraph } from './LightCurveGraph';
-import { Satellite, AlertTriangle, Activity, Radio, Zap } from 'lucide-react';
+import { Satellite, AlertTriangle, Activity, Zap } from 'lucide-react';
 
 // ─── Inline styles extracted as constants for clarity ───────────────────────
 

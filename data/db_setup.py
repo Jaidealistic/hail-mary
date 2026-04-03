@@ -19,13 +19,8 @@ class Star(Base):
     magnitude = Column(Float)
 
 def initialize_database():
-    # Attempt to create TimescaleDB extension (Forgiving for Supabase)
-    with engine.connect() as conn:
-        try:
-            conn.execute(text("CREATE EXTENSION IF NOT EXISTS timescaledb;"))
-            conn.commit()
-        except Exception as e:
-            print("TimescaleDB not supported on this cloud host, defaulting to standard PostgreSQL. Error:", e)
+    # TimescaleDB creation disabled for Supabase compatibility
+    pass
 
     # Drop tables if they exist to start fresh
     Base.metadata.drop_all(engine)
@@ -43,11 +38,7 @@ def initialize_database():
                 flux_err DOUBLE PRECISION
             );
         """))
-        # Make lightcurves a hypertable
-        try:
-            conn.execute(text("SELECT create_hypertable('lightcurves', 'time', if_not_exists => TRUE);"))
-        except Exception as e:
-            print("Hypertable may already exist or error occurred:", e)
+        # Hypertable creation disabled for Supabase compatibility
         
         # Create an index to quickly lookup star lightcurves
         conn.execute(text("CREATE INDEX IF NOT EXISTS ix_star_id ON lightcurves(star_id, time DESC);"))
