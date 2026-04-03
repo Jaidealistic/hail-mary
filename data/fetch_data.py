@@ -17,14 +17,19 @@ DATABASE_URL = os.environ.get("DATABASE_URL")
 engine = create_engine(DATABASE_URL)
 Session = sessionmaker(bind=engine)
 
-# Famous stars to pull!
-TARGETS = ["Kepler-10", "Kepler-22"]
+# Famous stars to pull! (Including Kepler, TESS, and K2 targets!)
+TARGETS = [
+    "Kepler-10", "Kepler-22", "Kepler-186", 
+    "Kepler-452", "TRAPPIST-1", "TOI-700", 
+    "Kepler-62", "Kepler-11", "Kepler-90", 
+    "WASP-12", "WASP-39", "K2-18"
+]
 
 def fetch_and_ingest(target):
     print(f"\\n--- Fetching Data for {target} ---")
     
-    # We search the MAST API for Kepler target. We download light curve data at short cadence if available, or long cadence
-    search_result = lk.search_lightcurve(target, author="Kepler", cadence="long")
+    # We search the MAST API for any available telescope data (Kepler, K2, or TESS)
+    search_result = lk.search_lightcurve(target)
     if not search_result:
         print(f"No Kepler lightcurves found for {target}.")
         return

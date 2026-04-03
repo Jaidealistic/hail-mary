@@ -368,6 +368,7 @@ export const Dashboard: React.FC = () => {
     const [anomalies, setAnomalies] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
     const [scanning, setScanning] = useState(false);
+    const [dropdownOpen, setDropdownOpen] = useState(false);
 
     useEffect(() => {
         getStars().then(data => {
@@ -520,81 +521,20 @@ export const Dashboard: React.FC = () => {
                     <StatCard label="Neural Net Status" value={scanning ? 'SCANNING' : 'STANDBY'} accent={scanning ? C.solarOrange : C.amber} />
                 </div>
 
-                {/* ── MAIN GRID ── */}
+                {/* ── MAIN CONTENT AREA ── */}
                 <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: '260px 1fr',
-                    gap: '0',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    padding: '24px 32px',
+                    gap: '24px',
                     minHeight: 'calc(100vh - 140px)',
+                    maxWidth: '1400px',
+                    margin: '0 auto',
+                    width: '100%',
                 }}>
 
-                    {/* ── SIDEBAR ── */}
-                    <aside style={{
-                        borderRight: `1px solid ${C.panelBorder}`,
-                        background: 'linear-gradient(180deg, rgba(10,8,16,0.9) 0%, rgba(8,6,12,0.9) 100%)',
-                        padding: '24px 16px',
-                        overflowY: 'auto',
-                    }}>
-                        <div style={{
-                            fontFamily: FONTS.mono,
-                            fontSize: '9px',
-                            letterSpacing: '0.25em',
-                            color: C.mutedText,
-                            marginBottom: '16px',
-                            paddingBottom: '10px',
-                            borderBottom: `1px solid ${C.panelBorder}`,
-                            display: 'flex', alignItems: 'center', gap: 8,
-                        }}>
-                            <Radio size={10} color={C.amber} />
-                            TRACKED TARGETS
-                        </div>
-
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                            {stars.map((star, i) => (
-                                <button
-                                    key={star.star_id}
-                                    onClick={() => setSelectedStar(star.star_id)}
-                                    className={`star-item-btn ${selectedStar === star.star_id ? 'active' : ''}`}
-                                    style={{ animationDelay: `${i * 0.04}s` }}
-                                >
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                        <span style={{
-                                            fontSize: '12px',
-                                            color: selectedStar === star.star_id ? C.amberBright : C.dimText,
-                                            letterSpacing: '0.05em',
-                                        }}>
-                                            {star.star_id}
-                                        </span>
-                                        {selectedStar === star.star_id && (
-                                            <div style={{ width: 4, height: 4, borderRadius: '50%', background: C.amber, boxShadow: `0 0 6px ${C.amber}` }} />
-                                        )}
-                                    </div>
-                                    <div style={{
-                                        fontSize: '9px',
-                                        fontFamily: FONTS.mono,
-                                        color: C.mutedText,
-                                        marginTop: '2px',
-                                        letterSpacing: '0.1em',
-                                    }}>
-                                        {star.mission}
-                                    </div>
-                                </button>
-                            ))}
-
-                            {stars.length === 0 && (
-                                <div style={{
-                                    fontFamily: FONTS.mono, fontSize: '10px',
-                                    color: C.mutedText, textAlign: 'center', padding: '24px 0',
-                                    letterSpacing: '0.1em',
-                                }}>
-                                    AWAITING UPLINK...
-                                </div>
-                            )}
-                        </div>
-                    </aside>
-
                     {/* ── MAIN CONTENT ── */}
-                    <main style={{ padding: '24px 28px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                    <main style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
 
                         {/* Control bar */}
                         <div style={{
@@ -608,25 +548,124 @@ export const Dashboard: React.FC = () => {
                             flexWrap: 'wrap',
                             gap: '16px',
                         }}>
-                            <div>
-                                <div style={{
-                                    fontFamily: FONTS.display,
-                                    fontSize: '18px',
-                                    fontWeight: 700,
-                                    letterSpacing: '0.1em',
-                                    color: C.amberBright,
-                                    lineHeight: 1.2,
-                                }}>
-                                    {selectedStar ?? 'NO TARGET SELECTED'}
-                                </div>
+                            <div style={{ position: 'relative' }}>
+                                <button 
+                                    onClick={() => setDropdownOpen(!dropdownOpen)}
+                                    style={{
+                                        fontFamily: FONTS.display,
+                                        fontSize: '18px',
+                                        fontWeight: 700,
+                                        letterSpacing: '0.1em',
+                                        color: C.amberBright,
+                                        lineHeight: 1.2,
+                                        background: 'transparent',
+                                        border: 'none',
+                                        cursor: 'pointer',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '12px',
+                                        padding: 0,
+                                        outline: 'none',
+                                        textShadow: `0 0 10px ${C.amber}40`,
+                                    }}
+                                >
+                                    {selectedStar ?? 'SELECT TARGET'} 
+                                    <span style={{ 
+                                        fontSize: '12px', 
+                                        transition: 'transform 0.3s ease',
+                                        transform: dropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)'
+                                    }}>▼</span>
+                                </button>
+                                
+                                {/* Dropdown Menu */}
+                                {dropdownOpen && (
+                                    <div style={{
+                                        position: 'absolute',
+                                        top: '100%',
+                                        left: 0,
+                                        marginTop: '12px',
+                                        width: '280px',
+                                        maxHeight: '400px',
+                                        overflowY: 'auto',
+                                        background: 'rgba(10,8,16,0.98)',
+                                        border: `1px solid ${C.panelBorder}`,
+                                        borderRadius: '8px',
+                                        boxShadow: `0 10px 40px rgba(0,0,0,0.5), 0 0 20px ${C.amber}20`,
+                                        zIndex: 1000,
+                                        backdropFilter: 'blur(16px)',
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        padding: '8px',
+                                        gap: '4px',
+                                        animation: 'slide-up 0.2s ease-out'
+                                    }}>
+                                        <div style={{
+                                            fontFamily: FONTS.mono,
+                                            fontSize: '9px',
+                                            letterSpacing: '0.25em',
+                                            color: C.mutedText,
+                                            padding: '8px',
+                                            borderBottom: `1px solid ${C.panelBorder}`,
+                                            marginBottom: '4px',
+                                        }}>
+                                            AVAILABLE STELLAR SYSTEMS
+                                        </div>
+                                        {stars.length === 0 ? (
+                                            <div style={{ padding: '12px 8px', fontFamily: FONTS.mono, fontSize: '10px', color: C.dimText }}>
+                                                No systems online.
+                                            </div>
+                                        ) : stars.map(star => (
+                                            <button
+                                                key={star.star_id}
+                                                onClick={() => {
+                                                    setSelectedStar(star.star_id);
+                                                    setDropdownOpen(false);
+                                                }}
+                                                style={{
+                                                    background: selectedStar === star.star_id ? `rgba(194,120,40,0.15)` : 'transparent',
+                                                    border: '1px solid transparent',
+                                                    borderColor: selectedStar === star.star_id ? `rgba(194,120,40,0.4)` : 'transparent',
+                                                    padding: '10px 12px',
+                                                    borderRadius: '6px',
+                                                    cursor: 'pointer',
+                                                    display: 'flex',
+                                                    justifyContent: 'space-between',
+                                                    alignItems: 'center',
+                                                    transition: 'all 0.2s',
+                                                }}
+                                                onMouseOver={(e) => {
+                                                    e.currentTarget.style.background = 'rgba(194,120,40,0.1)';
+                                                    e.currentTarget.style.borderColor = 'rgba(194,120,40,0.3)';
+                                                }}
+                                                onMouseOut={(e) => {
+                                                    if(selectedStar !== star.star_id) {
+                                                        e.currentTarget.style.background = 'transparent';
+                                                        e.currentTarget.style.borderColor = 'transparent';
+                                                    } else {
+                                                        e.currentTarget.style.background = 'rgba(194,120,40,0.15)';
+                                                        e.currentTarget.style.borderColor = 'rgba(194,120,40,0.4)';
+                                                    }
+                                                }}
+                                            >
+                                                <span style={{ fontFamily: FONTS.display, fontSize: '13px', color: selectedStar === star.star_id ? C.amberBright : '#E0E0E0' }}>
+                                                    {star.star_id}
+                                                </span>
+                                                <span style={{ fontFamily: FONTS.mono, fontSize: '9px', color: C.mutedText }}>
+                                                    {star.mission}
+                                                </span>
+                                            </button>
+                                        ))}
+                                    </div>
+                                )}
+
                                 <div style={{
                                     fontFamily: FONTS.mono,
                                     fontSize: '10px',
                                     color: C.mutedText,
-                                    marginTop: '4px',
+                                    marginTop: '8px',
                                     letterSpacing: '0.12em',
                                 }}>
-                                    NASA/KEPLER · PYTORCH LSTM AUTOENCODER · REAL-TIME TELEMETRY
+                                    PYTORCH LSTM AUTOENCODER · REAL-TIME TELEMETRY
                                 </div>
                             </div>
 
