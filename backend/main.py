@@ -47,6 +47,10 @@ def get_lightcurve(star_id: str):
     query = f"SELECT time, flux FROM lightcurves WHERE star_id='{star_id}' ORDER BY time ASC"
     df = pd.read_sql(query, engine)
     
+    # Cap size to 3000 points to ensure instantaneous browser rendering
+    if len(df) > 3000:
+        df = df.iloc[:3000]
+    
     if df.empty:
         raise HTTPException(status_code=404, detail=f"No lightcurve data for {star_id}")
         
@@ -59,6 +63,10 @@ def detect_anomalies(star_id: str):
     # 1. Fetch raw data natively from DB
     query = f"SELECT time, flux FROM lightcurves WHERE star_id='{star_id}' ORDER BY time ASC"
     df = pd.read_sql(query, engine)
+    
+    # Cap size to 3000 points to ensure instant Machine Learning inference execution
+    if len(df) > 3000:
+        df = df.iloc[:3000]
     if df.empty:
         raise HTTPException(status_code=404, detail="No lightcurve data")
 
