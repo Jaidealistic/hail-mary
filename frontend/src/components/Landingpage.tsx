@@ -15,19 +15,22 @@ const LandingPage: React.FC = () => {
     const [hovered, setHovered] = useState(false);
     const [btnHovered, setBtnHovered] = useState(false);
     const [launched, setLaunched] = useState(false);
-    const [particles, setParticles] = useState<Array<{id:number, x:number, y:number, size:number, speed:number, opacity:number}>>([]);
+    const [particles, setParticles] = useState<Array<{id:number, x:number, y:number, size:number, speed:number, opacity:number, delay:number}>>([]);
     const containerRef = useRef<HTMLDivElement>(null);
 
-    // Generate floating particle specs once
     useEffect(() => {
-        const pts = Array.from({ length: 28 }, (_, i) => ({
-            id: i,
-            x: Math.random() * 100,
-            y: Math.random() * 100,
-            size: 1 + Math.random() * 2.5,
-            speed: 15 + Math.random() * 30,
-            opacity: 0.2 + Math.random() * 0.6,
-        }));
+        const pts = Array.from({ length: 28 }, (_, i) => {
+            const speed = 15 + Math.random() * 30;
+            return {
+                id: i,
+                x: Math.random() * 100,
+                y: Math.random() * 100,
+                size: 1 + Math.random() * 2.5,
+                speed: speed,
+                opacity: 0.2 + Math.random() * 0.6,
+                delay: -speed * Math.random(),
+            };
+        });
         setParticles(pts);
     }, []);
 
@@ -342,7 +345,7 @@ const LandingPage: React.FC = () => {
                             boxShadow: `0 0 ${p.size * 4}px ${accentColor}`,
                             opacity: p.opacity * (hovered ? 1.4 : 1),
                             zIndex: 6,
-                            animation: `drift-up ${p.speed}s ease-in-out ${-p.speed * Math.random()}s infinite`,
+                            animation: `drift-up ${p.speed}s ease-in-out ${p.delay}s infinite`,
                             ['--op' as any]: p.opacity,
                         } as React.CSSProperties}
                     />
