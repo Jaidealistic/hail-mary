@@ -369,13 +369,24 @@ export const Dashboard: React.FC = () => {
     const [loading, setLoading] = useState(false);
     const [scanning, setScanning] = useState(false);
     const [dropdownOpen, setDropdownOpen] = useState(false);
+    const [starsLoading, setStarsLoading] = useState(true);
+    const [starsError, setStarsError] = useState<string | null>(null);
 
-    useEffect(() => {
+    const fetchStars = () => {
+        setStarsLoading(true);
+        setStarsError(null);
         getStars().then(data => {
             setStars(data);
             if (data.length > 0) setSelectedStar(data[0].star_id);
-        }).catch(err => console.error(err));
-    }, []);
+            setStarsLoading(false);
+        }).catch(err => {
+            console.error(err);
+            setStarsError('Backend is waking up from sleep. This takes ~30 seconds on the free tier. Retrying...');
+            setStarsLoading(false);
+        });
+    };
+
+    useEffect(() => { fetchStars(); }, []);
 
     useEffect(() => {
         if (!selectedStar) return;
@@ -610,9 +621,29 @@ export const Dashboard: React.FC = () => {
                                         }}>
                                             AVAILABLE STELLAR SYSTEMS
                                         </div>
-                                        {stars.length === 0 ? (
+                                        {starsLoading ? (
+                                            <div style={{ padding: '16px 8px', fontFamily: FONTS.mono, fontSize: '10px', color: C.amber, letterSpacing: '0.15em', display: 'flex', alignItems: 'center', gap: 8 }}>
+                                                <div style={{ width: 8, height: 8, borderRadius: '50%', background: C.amber, animation: 'pulse-amber 1s ease-in-out infinite' }} />
+                                                CONTACTING BACKEND...
+                                            </div>
+                                        ) : starsError ? (
+                                            <div style={{ padding: '16px 8px' }}>
+                                                <div style={{ fontFamily: FONTS.mono, fontSize: '9px', color: C.emberRed, letterSpacing: '0.15em', marginBottom: 8 }}>
+                                                    ⚠ BACKEND OFFLINE — RENDER FREE TIER SLEEPING
+                                                </div>
+                                                <div style={{ fontFamily: FONTS.mono, fontSize: '9px', color: C.dimText, marginBottom: 12, lineHeight: 1.6 }}>
+                                                    Cold start takes ~30–60 seconds. Click retry after a moment.
+                                                </div>
+                                                <button
+                                                    onClick={fetchStars}
+                                                    style={{ fontFamily: FONTS.mono, fontSize: '9px', letterSpacing: '0.15em', background: `${C.amber}15`, border: `1px solid ${C.amber}40`, color: C.amber, padding: '6px 12px', borderRadius: 4, cursor: 'pointer' }}
+                                                >
+                                                    ↺ RETRY CONNECTION
+                                                </button>
+                                            </div>
+                                        ) : stars.length === 0 ? (
                                             <div style={{ padding: '12px 8px', fontFamily: FONTS.mono, fontSize: '10px', color: C.dimText }}>
-                                                No systems online.
+                                                No stellar targets in database.
                                             </div>
                                         ) : stars.map(star => (
                                             <button
