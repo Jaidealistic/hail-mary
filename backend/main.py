@@ -27,35 +27,55 @@ def read_root():
 
 @app.get("/stars")
 def get_stars(db: Session = Depends(get_db)):
-    cached = redis_client.get("all_stars")
-    if cached:
-        return json.loads(cached)
-        
+    # Try cache first — silently skip if Redis is unavailable
+    try:
+        cached = redis_client.get("all_stars")
+        if cached:
+            return json.loads(cached)
+    except Exception:
+        pass
+
     result = db.execute(text("SELECT star_id, mission, ra, dec FROM stars")).fetchall()
     stars = [{"star_id": r[0], "mission": r[1], "ra": r[2], "dec": r[3]} for r in result]
-    
-    redis_client.setex("all_stars", 3600, json.dumps(stars)) # Cache heavily!
+
+    # Try to cache — silently skip if Redis is unavailable
+    try:
+        redis_client.setex("all_stars", 3600, json.dumps(stars))
+    except Exception:
+        pass
+
     return stars
 
 @app.get("/stars/{star_id}/lightcurve")
 def get_lightcurve(star_id: str):
     cache_key = f"lightcurve_{star_id}"
-    cached = redis_client.get(cache_key)
-    if cached:
-        return json.loads(cached)
-        
+
+    # Try cache first — silently skip if Redis is unavailable
+    try:
+        cached = redis_client.get(cache_key)
+        if cached:
+            return json.loads(cached)
+    except Exception:
+        pass
+
     query = f"SELECT time, flux FROM lightcurves WHERE star_id='{star_id}' ORDER BY time ASC"
     df = pd.read_sql(query, engine)
-    
+
     # Cap size to 3000 points to ensure instantaneous browser rendering
     if len(df) > 3000:
         df = df.iloc[:3000]
-    
+
     if df.empty:
         raise HTTPException(status_code=404, detail=f"No lightcurve data for {star_id}")
-        
+
     data = {"times": df['time'].tolist(), "fluxes": df['flux'].tolist()}
-    redis_client.setex(cache_key, 3600, json.dumps(data))
+
+    # Try to cache — silently skip if Redis is unavailable
+    try:
+        redis_client.setex(cache_key, 3600, json.dumps(data))
+    except Exception:
+        pass
+
     return data
 
 @app.post("/stars/{star_id}/anomalies")
